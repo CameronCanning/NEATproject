@@ -19,21 +19,12 @@ class Mutation():
         self.set_thresholds(0.25, 0.03 , 0.02, 0.7)
 
 
-    def normalize_thresholds(self):
-        sum = 0.0
-        for threshold in Type.values():
-            sum += threshold
-
-        for mutation, threshold in Type.items():
-            self.mutation_types[mutation] = threshold / sum
-
 
     def set_thresholds(self, ac, an, dc, w):
         self.mutation_types[Mutation.Type.ADD_CONNECTION] = ac
         self.mutation_types[Mutation.Type.ADD_NODE] = an
         self.mutation_types[Mutation.Type.DISABLE_CONNECTION] = dc
         self.mutation_types[Mutation.Type.WEIGHT] = w
-        #self.normilize_thresholds()
 
     def get_mutation(self, p):
         threshold = 0.0
@@ -99,7 +90,7 @@ class Mutation():
     def add_connection(self, genome):
 
         into = random.choice(list(genome.nodes.keys()))
-        out = random.choice(list(genome.nodes.keys()))
+        out = random.choice(list(genome.nodes.keys())[neat.Genome.inputs:])
 
         if into == out:
             return False
@@ -109,13 +100,17 @@ class Mutation():
             into = out
             out = temp
 
+        if into >= 1000 and out >= 1000:
+            return False
+
         connection = neat.Connection()
         connection.into = into
         connection.out = out
 
-        if connection in genome.connections:
-            return False
-
+        for connection2 in genome.connections.values():
+            if connection == connection2:
+                return False
+                
         genome.at_innovation += 1
         connection.innovation = genome.at_innovation
         connection.weight = random.random() * 4 - 2

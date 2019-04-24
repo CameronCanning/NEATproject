@@ -49,6 +49,9 @@ class Game():
             return True
         elif self.player.moves > 100:
             return True
+        elif self.player.position == self.end:
+            self.player.fitness = 1000
+            return True
         return False
     def move(self, player):
         inputs = self.get_inputs(player)
@@ -59,22 +62,20 @@ class Game():
         #input(player.position)
 
     def evaluate(self, player):
+        x, y = player.position
         if not Game.inbounds(player.position):
+            player.genome.fitness = x * y
             self.players.pop(player.id)
         elif self.off_path(player.position):
+            player.genome.fitness = x * y
             self.players.pop(player.id)
         #not progressing
         elif player.moves > 100:
             player.fitness = 1
             self.players.pop(player.id)
         elif player.position == self.end:
-            player.genome.fitness = 1000 - player.genome.fitness
+            player.genome.fitness = 1000 - player.moves
             self.players.pop(player.id)
-        else:
-            x, y = player.position
-            player.genome.fitness = x * y
-
-
     def get_inputs(self, player):
         inputs = [0,0,0,0,0,0,0,0]
 

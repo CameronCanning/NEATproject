@@ -1,5 +1,6 @@
 import neat
 import pygame
+import sys
 from tkinter import *
 
 def next_gen():
@@ -13,7 +14,9 @@ def next_gen():
     #population.breed()
     #population.evaluate_fitness()
     #population.generation += 1
-
+def show_genome():
+    print(population.top_genome)
+    sys.stdout.flush()
 def play():
     population.setup_player()
 
@@ -109,6 +112,9 @@ gen_txt.grid(column=1, row=0, padx=2, pady=2)
 
 play_btn = Button(btn_frame, text = 'Play', command=play)
 play_btn.grid(column=0, row=1, sticky='ew', padx=2, pady=2)
+
+show_gen = Button(btn_frame, text= 'Show Genome', command=show_genome)
+show_gen.grid(column=0, row=2, sticky='ew',padx=2, pady=2)
 
 pop_title = Label(output_frame, text='Population: ')
 pop_title.grid(column=0, row=0, sticky='w')

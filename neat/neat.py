@@ -10,15 +10,15 @@ class Population():
 
     def __init__(self):
         self.species = []
-        self.size = 100
+        self.size = 0
         self.max_size = 100
         self.top_genome = None
         self.average_fitness = 0
-        self.generation = 1
+        self.generation = 0
         self.innovation = 0
         self.mutation = mutation.Mutation()
         self.game = game.Game()
-        for i in range(self.size):
+        for i in range(self.max_size):
             genome = Genome()
             genome.create_simple()
             self.add_genome(genome)
@@ -95,6 +95,7 @@ class Population():
             self.generation += 1
 
     def rank_and_remove(self, remove):
+        self.size = 0
         for i in range(len(self.species)):
             if self.species[i].genomes:
                 self.species[i].genomes.sort(key = lambda genome: genome.fitness, reverse = True)
@@ -102,7 +103,7 @@ class Population():
                     size = len(self.species[i].genomes)
                     if size > 1:
                         amount = int(size/2)
-                        self.size -= self.size - amount
+                        self.size += amount
                         self.species[i].genomes = self.species[i].genomes[:amount]
             else:
                 self.species.pop(i)
@@ -169,7 +170,7 @@ class Node():
 class Genome():
     inputs = 8
     outputs = 4
-    max_nodes = 100000
+    max_nodes = 1000
     def __init__(self):
         self.connections = OrderedDict()
         self.nodes = OrderedDict()
@@ -178,9 +179,9 @@ class Genome():
         self.at_node = 0
 
     def __str__(self):
-        string = ''
+        string = 'Top Genome:\n'
         for connection in self.connections.values():
-            string += str(connection)
+            string += (str((str(connection), round(connection.weight,3), connection.enabled))) +'\n'
         return string
 
     def generate_nodes(self):
